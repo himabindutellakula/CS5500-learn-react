@@ -1,8 +1,13 @@
 import { useState } from 'react';
 import { ItemListProps } from '../../types/arrObj';
 
-let nextId = 3;
-const initialList = [
+type ArtListWorkType = {
+  id: number,
+  seen: boolean,
+  title: string
+}
+
+const initialList: ArtListWorkType[] = [
   { id: 0, title: 'Big Bellies', seen: false },
   { id: 1, title: 'Lunar Landscape', seen: false },
   { id: 2, title: 'Terracotta Army', seen: true },
@@ -15,9 +20,7 @@ const initialList = [
  */
 export default function BucketList() {
   const [myList, setMyList] = useState(initialList);
-  const [yourList, setYourList] = useState(
-    initialList
-  );
+  const [yourList, setYourList] = useState(initialList);
 
   /**
    * The function updates the seen property of the artwork with the given id in the mylist.
@@ -25,13 +28,20 @@ export default function BucketList() {
    * @param nextSeen - the value with which to update the seen property of the artwork
    */
   function handleToggleMyList(artworkId: number, nextSeen: boolean) {
-    const tmpList = myList.map(e => {
-        if (e.id === artworkId) {
-            e.seen = nextSeen
-        }
-        return e
-    });
+    const tmpList = toggleList(myList, artworkId, nextSeen)
     setMyList(tmpList);
+  }
+
+
+
+  //reuse the togglelist in both the functions
+  function toggleList(aList: ArtListWorkType[], artworkId: number, nextSeen: boolean) {
+    return aList.map(e => {
+      if (e.id === artworkId) {
+        return { ...e, seen: nextSeen }
+      }
+      return e
+    });
   }
 
   /**
@@ -40,12 +50,7 @@ export default function BucketList() {
    * @param nextSeen - the value with which to update the seen property of the artwork
    */
   function handleToggleYourList(artworkId: number, nextSeen: boolean) {
-    const tmpList = yourList.map(e => {
-        if (e.id === artworkId) {
-            e.seen = nextSeen
-        }
-        return e
-    });
+    const tmpList = toggleList(yourList, artworkId, nextSeen)
     setYourList(tmpList);
   }
 
